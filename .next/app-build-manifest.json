@@ -1,0 +1,27 @@
+{
+  "pages": {
+    "/(root)/register-user/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(root)/register-user/page.css",
+      "static/chunks/app/(root)/register-user/page.js"
+    ],
+    "/(root)/register-user/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(root)/register-user/layout.js"
+    ],
+    "/(root)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(root)/layout.css",
+      "static/chunks/app/(root)/layout.js"
+    ],
+    "/(root)/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(root)/page.css",
+      "static/chunks/app/(root)/page.js"
+    ]
+  }
+}
