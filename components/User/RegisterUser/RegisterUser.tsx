@@ -705,6 +705,62 @@ export default function RegisterUser() {
   }, [auth]);
 
   // 1️⃣ Send OTP
+  // const handleSendOtp = async () => {
+  //   const valid = await methods.trigger("mobile");
+  //   if (!valid) return;
+
+  //   const mobile = methods.getValues("mobile");
+  //   setSendingOtp(true);
+
+  //   // Exponential backoff parameters
+  //   let delay = 1000; // Initial delay of 1 second
+  //   const maxDelay = 60000; // Maximum delay of 1 minute
+  //   const maxRetries = 3; // Maximum number of retries
+  //   let retryCount = 0;
+
+  //   while (retryCount < maxRetries) {
+  //     try {
+  //       const result = await signInWithPhoneNumber(
+  //         auth,
+  //         "+91" + mobile,
+  //         recaptchaVerifierRef.current!
+  //       );
+  //       setConfirmation(result);
+  //       setOtpSent(true);
+  //       toast({ variant: "success", title: "OTP sent – check your phone" });
+  //       setSendingOtp(false); // Only set to false on success
+  //       return; // Exit the function on success
+  //     } catch (err: any) {
+  //       if (err.code === "auth/too-many-requests") {
+  //         retryCount++;
+  //         toast({
+  //           variant: "warning",
+  //           title: "Too many attempts, retrying...",
+  //           description: `Waiting ${delay / 1000} seconds before next attempt.`,
+  //         });
+  //         await new Promise((resolve) => setTimeout(resolve, delay));
+  //         delay = Math.min(delay * 2, maxDelay); // Double the delay, but don't exceed maxDelay
+  //       } else {
+  //         toast({
+  //           variant: "destructive",
+  //           title: "Failed to send OTP",
+  //           description: err.message || String(err),
+  //         });
+  //         setSendingOtp(false);
+  //         return; // Exit the function on other errors
+  //       }
+  //     }
+  //   }
+
+  //   // If we reach here, we've retried too many times
+  //   toast({
+  //     variant: "destructive",
+  //     title: "Failed to send OTP after multiple retries",
+  //     description: "Please try again later.",
+  //   });
+  //   setSendingOtp(false);
+  // };
+
   const handleSendOtp = async () => {
     const valid = await methods.trigger("mobile");
     if (!valid) return;
@@ -712,53 +768,30 @@ export default function RegisterUser() {
     const mobile = methods.getValues("mobile");
     setSendingOtp(true);
 
-    // Exponential backoff parameters
-    let delay = 1000; // Initial delay of 1 second
-    const maxDelay = 60000; // Maximum delay of 1 minute
-    const maxRetries = 3; // Maximum number of retries
-    let retryCount = 0;
+    try {
+      const result = await signInWithPhoneNumber(
+        auth,
+        "+91" + mobile,
+        recaptchaVerifierRef.current!
+      );
+      setConfirmation(result);
+      setOtpSent(true);
+      toast({ variant: "success", title: "OTP sent – check your phone" });
+    } catch (err: any) {
+      let message = "Failed to send OTP. Please try again.";
 
-    while (retryCount < maxRetries) {
-      try {
-        const result = await signInWithPhoneNumber(
-          auth,
-          "+91" + mobile,
-          recaptchaVerifierRef.current!
-        );
-        setConfirmation(result);
-        setOtpSent(true);
-        toast({ variant: "success", title: "OTP sent – check your phone" });
-        setSendingOtp(false); // Only set to false on success
-        return; // Exit the function on success
-      } catch (err: any) {
-        if (err.code === "auth/too-many-requests") {
-          retryCount++;
-          toast({
-            variant: "warning",
-            title: "Too many attempts, retrying...",
-            description: `Waiting ${delay / 1000} seconds before next attempt.`,
-          });
-          await new Promise((resolve) => setTimeout(resolve, delay));
-          delay = Math.min(delay * 2, maxDelay); // Double the delay, but don't exceed maxDelay
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Failed to send OTP",
-            description: err.message || String(err),
-          });
-          setSendingOtp(false);
-          return; // Exit the function on other errors
-        }
+      if (err.code === "auth/too-many-requests") {
+        message = "Failed to send OTP Please try again later.";
       }
-    }
 
-    // If we reach here, we've retried too many times
-    toast({
-      variant: "destructive",
-      title: "Failed to send OTP after multiple retries",
-      description: "Please try again later.",
-    });
-    setSendingOtp(false);
+      toast({
+        variant: "destructive",
+        title: "OTP Sending Failed",
+        description: message,
+      });
+    } finally {
+      setSendingOtp(false);
+    }
   };
 
   // 2️⃣ Verify OTP & register
@@ -783,11 +816,22 @@ export default function RegisterUser() {
         });
       }
     } catch (err: any) {
+      let errorMessage = "Something went wrong during OTP verification.";
+
+      if (err.code === "auth/invalid-verification-code") {
+        errorMessage = "The OTP you entered is invalid. Please try again.";
+      }
+
       toast({
         variant: "destructive",
-        title: "Invalid OTP",
-        description: err.message || String(err),
+        title: "OTP Verification Failed",
+        description: errorMessage,
       });
+      // toast({
+      //   variant: "destructive",
+      //   title: "Invalid OTP",
+      //   description: err.message || String(err),
+      // });
     }
 
     setVerifying(false);
