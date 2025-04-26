@@ -1,7 +1,8 @@
 import axios from "axios"
 
 // export const BASE_URL = 'http://localhost:5000'
-export const BASE_URL = 'https://api.meatsays.com'
+// export const BASE_URL = 'https://api.meatsays.com'
+export const BASE_URL = 'https://4837-2409-40d0-2017-6ebb-3880-ce10-562-d25a.ngrok-free.app'
 
 export const axiosInstance = axios.create({});
 
@@ -45,6 +46,8 @@ export const UserRoutes_API: any = {
     verifyExistingAccount: '/api/v1/user/verifyExistingAccount',
     validateUser: '/api/v1/user/validateUser',
     fetchAllUsers: '/api/v1/user/fetchAllUsers',
+    loginWithFirebaseUser: '/api/v1/user/loginWithFirebaseUser',
+    createUserAfterPhoneVerification: '/api/v1/user/createUserAfterPhoneVerification',
 }
 
 export const OrderRoutes_API: any = {

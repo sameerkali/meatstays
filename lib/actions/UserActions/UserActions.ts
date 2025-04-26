@@ -178,3 +178,74 @@ export async function logoutUser() {
         return false;
     }
 }
+
+
+export const loginWithFirebaseUser = async (phone: string) => {
+  try {
+    const API = BASE_URL + UserRoutes_API.loginWithFirebaseUser;
+    const res = await apiConnector({
+      method: "POST",
+      url: API,
+      bodyData: { phone },
+    });
+
+    const oneDay = 1 * 60 * 60 * 1000;
+    cookies().set({
+      name: "usertoken",
+      value: res.data.data.token,
+      httpOnly: true,
+      path: "/",
+      maxAge: oneDay,
+      expires: Date.now() + oneDay,
+    });
+
+    return res.data; // { success: boolean, data: { token?, newUser? }, message: string }
+  } catch (error: any) {
+    if (error?.response?.data) {
+      return error.response.data;
+    } else {
+      return {
+        success: false,
+        message: "Server Error",
+      };
+    }
+  }
+};
+
+
+
+export const createUserAfterPhoneVerification = async (values: { name: string; phone: string; email?: string }) => {
+  try {
+    const API = BASE_URL + UserRoutes_API.createUserAfterPhoneVerification;
+    const res = await apiConnector({
+      method: "POST",
+      url: API,
+      bodyData: {
+        name: values.name.trim(),
+        phone: values.phone,
+        email: values.email?.trim().toLowerCase() || undefined,
+      },
+    });
+
+    const oneDay = 1 * 60 * 60 * 1000;
+    cookies().set({
+      name: "usertoken",
+      value: res.data.data.token,
+      httpOnly: true,
+      path: "/",
+      maxAge: oneDay,
+      expires: Date.now() + oneDay,
+    });
+
+    return res.data; // { success: boolean, data: { token }, message: string }
+  } catch (error: any) {
+    if (error?.response?.data) {
+      return error.response.data;
+    } else {
+      return {
+        success: false,
+        message: "Server Error",
+      };
+    }
+  }
+};
