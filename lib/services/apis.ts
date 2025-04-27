@@ -2,7 +2,7 @@ import axios from "axios"
 
 // export const BASE_URL = 'http://localhost:5000'
 // export const BASE_URL = 'https://api.meatsays.com'
-export const BASE_URL = 'https://4837-2409-40d0-2017-6ebb-3880-ce10-562-d25a.ngrok-free.app'
+export const BASE_URL = 'https://a6ce-2401-4900-881e-bac8-8852-dd4c-2784-5a00.ngrok-free.app'
 
 export const axiosInstance = axios.create({});
 

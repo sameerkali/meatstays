@@ -629,6 +629,7 @@ const LoginUserForm = () => {
 
       // ✅ Call backend to check if user exists
       const res = await loginWithFirebaseUser(phoneNumber);
+
       console.log(res.data, "res from loginWithFirebaseUser");
 
       if (res?.success && res?.data?.newUser === false) {
