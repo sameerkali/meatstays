@@ -214,7 +214,7 @@ export const loginWithFirebaseUser = async (phone: string) => {
 
 
 
-export const createUserAfterPhoneVerification = async (values: { name: string; phone: string; email?: string }) => {
+export const createUserAfterPhoneVerification = async (values: { name: string; phone: string; email?: string, password:string; }) => {
   try {
     const API = BASE_URL + UserRoutes_API.createUserAfterPhoneVerification;
     const res = await apiConnector({
@@ -224,6 +224,7 @@ export const createUserAfterPhoneVerification = async (values: { name: string; p
         name: values.name.trim(),
         phone: values.phone,
         email: values.email?.trim().toLowerCase() || undefined,
+        password: values.password
       },
     });
 
