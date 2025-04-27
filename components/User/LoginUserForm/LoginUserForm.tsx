@@ -928,7 +928,11 @@ const LoginUserForm = () => {
       setVerifyingOtp(true);
       const result = await confirmation.confirm(otp);
       const firebaseUser = result.user;
-      const phoneNumber = firebaseUser.phoneNumber || phone;
+      // const phoneNumber = firebaseUser.phoneNumber || phone;
+      const phoneNumber = (firebaseUser.phoneNumber || phone).replace(
+        "+91",
+        ""
+      ); // remove +91
       const res = await loginWithFirebaseUser(phoneNumber);
       if (res?.success && res?.data?.newUser === false) {
         toast({ variant: "success", title: res.message });
