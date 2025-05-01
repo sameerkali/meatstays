@@ -60,6 +60,7 @@ export const loginUser = async (values: any) => {
                 password: values.password,
             },
         });
+        // console.log(res.data, "res.data")
         const oneDay = 1 * 60 * 60 * 1000
         cookies().set({
             name: 'usertoken',
@@ -73,6 +74,8 @@ export const loginUser = async (values: any) => {
     }
     catch (error: any) {
         if (error?.response?.data) {
+            console.log(error?.response?.data,"error?.response?.status)");
+            
             return error.response.data;
         }
         else {

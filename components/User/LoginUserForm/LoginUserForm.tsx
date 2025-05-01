@@ -965,7 +965,9 @@ const LoginUserForm = () => {
 
   const handleEmailLogin = async (values: any) => {
     setLoading(true);
+    console.log("inside email auth")
     const res = await loginUser(values);
+    console.log(res, "res from loginUser")
     if (res?.success) {
       toast({ variant: "success", title: res.message });
       router.push("/");
