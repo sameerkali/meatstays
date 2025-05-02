@@ -1,8 +1,8 @@
 import axios from "axios"
 
 // export const BASE_URL = 'http://localhost:5000'
-// export const BASE_URL = 'https://api.meatsays.com'
-export const BASE_URL = 'http://195.35.22.58:9000'
+export const BASE_URL = 'https://api.meatsays.com'
+// export const BASE_URL = 'http://195.35.22.58:9000'
 // export const BASE_URL = "https://76de-2409-40d0-2017-6ebb-89e9-b379-50f9-e0cb.ngrok-free.app"
 
 export const axiosInstance = axios.create({});
