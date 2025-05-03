@@ -22,15 +22,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // ✅ Ignore ESLint errors during builds
   },
-
-  // Add custom port configuration
-  async rewrites() {
-    return [];
-  },
-  // Set custom port
-  serverOptions: {
-    port: 4000, // Change this number to your desired port
-  },
 };
 
 export default nextConfig;
