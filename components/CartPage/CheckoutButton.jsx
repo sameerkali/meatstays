@@ -16,11 +16,16 @@ const CheckoutButton = () => {
   const { toast } = useToast();
   const dispatch = useDispatch();
 
+  const showToast = (props) => {
+    toast({
+      ...props,
+      duration: 2000, 
+    });
+  };
 
   const cartItems = useSelector((state) => state.cart);
   const address = useSelector((state) => state.address);
 
-  // Calculate the total price for all products and their quantities
   const total = cartItems.reduce((acc, curr) => acc + (curr.Quantity * curr.price), 0);
 
   let orderDetails = {
@@ -33,30 +38,26 @@ const CheckoutButton = () => {
   const handleSubmit = async () => {
     setLoading(true);
     if(address.address.length === 0){
-      toast({
+      showToast({
           variant: "destructive",
           description: "Add Address!",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
-        })
+        });
         setLoading(false);
       return;
     }
     const res = await createOrder(orderDetails);
-    // console.log(res);
 
     if (res?.success) {
       if (res?.data?.paymentMode === "online") {
-        // online page 
         await handlePayment(res?.data?._id);
       }
       else {
-        // offline payment - cod
-        toast({
+        showToast({
           variant: "success",
           title: res.message,
         });
         dispatch(clearCart());
-        // router.push('/login-user');
         if (typeof window !== 'undefined') {
           window.location.reload();
         }
@@ -64,19 +65,19 @@ const CheckoutButton = () => {
     }
     else {
       if (res && res?.message === "Invalid token!") {
-        toast({
+        showToast({
           variant: "destructive",
           description: "Login to checkout!",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
-        })
+        });
         router.push('/login-user')
       }
       else {
-        toast({
+        showToast({
           variant: "destructive",
           description: res?.message,
           action: <ToastAction altText="Try again">Try again</ToastAction>,
-        })
+        });
       }
     }
     setLoading(false);
@@ -86,25 +87,24 @@ const CheckoutButton = () => {
     setLoading(true)
     const res = await OrderPayment(orderId);
     if (res?.success) {
-      toast({
+      showToast({
         variant: "success",
         title: res.message,
       });
       await initPayment(res?.data, orderId);
     }
     else {
-      toast({
+      showToast({
         variant: "destructive",
         description: res?.message,
         action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
+      });
     }
     setLoading(false);
   }
 
   const initPayment = async (data, orderId) => {
     const key = process.env.RAZORPAY_KEY_ID;
-    // console.log(data);
     const options = {
       key: key,
       amount: data.amount,
@@ -115,18 +115,18 @@ const CheckoutButton = () => {
       handler: async (response) => {
         const res = await VerifyPayment(response);
         if (res?.success) {
-          toast({
+          showToast({
             variant: "success",
             title: res.message,
           });
           savePayment(res.data, orderId, data.amount)
         }
         else {
-          toast({
+          showToast({
             variant: "destructive",
             description: res?.message,
             action: <ToastAction altText="Try again">Try again</ToastAction>,
-          })
+          });
         }
       },
       theme: {
@@ -152,24 +152,22 @@ const CheckoutButton = () => {
     }
 
     const res = await SavePaymentDetails(values);
-    // console.log(res);
     if (res?.success) {
-      toast({
+      showToast({
         variant: "success",
         title: res.message,
       });
       dispatch(clearCart());
-      // router.push('/login-user');
       if (typeof window !== 'undefined') {
         window.location.reload();
       }
     }
     else {
-      toast({
+      showToast({
         variant: "destructive",
         description: res?.message,
         action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
+      });
     }
     
     setLoading(false);
@@ -199,6 +197,3 @@ const CheckoutButton = () => {
 }
 
 export default CheckoutButton
-
-// logint ot checkour wala game server component wale function me check kr lenege
-// success@razorpay
